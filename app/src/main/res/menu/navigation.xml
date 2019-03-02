@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_trash"
+        android:icon="@drawable/baseline_delete_forever_black_24dp"
+        android:title="@string/title_trash" />
+
+    <item
+        android:id="@+id/navigation_movie"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/title_movie" />
+    <item
+        android:id="@+id/navigation_tosee"
+        android:icon="@drawable/ic_notifications_black_24dp"
+        android:title="@string/title_tosee" />
+
+    <item
+        android:id="@+id/navigation_saw"
+        android:icon="@drawable/baseline_check_circle_black_24dp"
+        android:title="@string/title_saw" />
+
+</menu>
