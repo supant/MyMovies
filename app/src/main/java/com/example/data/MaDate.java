@@ -49,6 +49,9 @@ public class MaDate {
 	public int getAnnee() {
 		return annee;
 	}
+	public String getValeur() {
+		return valeur;
+	}
 
 	public String toStringJMA() {
 		return checkZero(jour)+"-"+checkZero(mois)+"-"+checkZero(annee);
@@ -66,6 +69,9 @@ public class MaDate {
 		return formater.format(toDate());
 	
 	}
+	public String toStringAMJHMS() {
+		return  valeur;
+	}
 	
 	
 	private Date toDate()  {
@@ -80,10 +86,25 @@ public class MaDate {
 			return new Date();
 		}
 	}
+
+	public int compareTo(MaDate date) {
+		if(annee==date.annee && jour==date.jour && mois==date.mois) return 0;
+		if (annee>date.annee) return 1;
+		if (annee<date.annee) return -1;
+		if (mois>date.mois) return 1;
+		if (mois<date.mois) return -1;
+		if (jour>date.jour) return 1;
+		if (jour<date.jour) return -1;
+		return 0;
+	}
 	
-	public String differenceJour(Date date) {
+	public String differenceJour() {
 		Date now = new Date();
 		return ""+(now.getTime() - toDate().getTime()) / (24 * 60 * 60 * 1000);  
+	}
+	public int differenceJourInv() {
+		Date now = new Date();
+		return (int)( -(now.getTime() - toDate().getTime()) / (24 * 60 * 60 * 1000) );
 	}
 	@Override
 	public String toString() {

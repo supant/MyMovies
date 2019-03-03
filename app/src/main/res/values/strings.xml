@@ -2,6 +2,7 @@
     <string name="app_name">MyMovies</string>
     <string name="title_trash">Trash</string>
     <string name="title_movie">Movies</string>
+    <string name="title_tonigth">Tonigth</string>
     <string name="title_tosee">ToSee</string>
     <string name="title_saw">Saw</string>
 </resources>

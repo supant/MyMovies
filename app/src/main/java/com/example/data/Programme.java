@@ -45,6 +45,24 @@ public class Programme {
         this.image="";
     }
 
+    public Programme(MaDate start, MaDate stop, String titre, String description, String image,
+                     int longueur, Chaine chaine, int statut, int dateCreation, String episode,
+                     int id, int statutAndroid, MaDate changement) {
+        this.start = start;
+        this.stop = stop;
+        this.titre = titre;
+        this.description = description;
+        this.image = image;
+        this.longueur = longueur;
+        this.chaine = chaine;
+        this.statut = statut;
+        this.dateCreation = dateCreation;
+        this.episode = episode;
+        this.id = id;
+        this.statutAndroid = statutAndroid;
+        this.changement = changement;
+        this.style = new LinkedList<String>();
+    }
 
     @Override
     public String toString() {
@@ -55,6 +73,22 @@ public class Programme {
                 + episode + ", id=" + id + "]";
     }
 
+
+    public String toStringTxt() {
+        //sans description pour l'instant
+        String result = virerPoinVirgule(titre)+";"+start.toStringAMJHMS()+";"+stop.toStringAMJHMS()+";"+
+        virerPoinVirgule("")+";"+image+";"+longueur+";"+chaine.getId()+";"+statut+";"+
+                dateCreation+";"+episode+";"+id+";"+changement.toStringAMJHMS()+";"+
+                statutAndroid+";"+style.size();
+        for(int i =0;i<style.size();i++) {
+            result += ";" + style.get(i);
+        }
+        return result;
+    }
+
+    private String virerPoinVirgule(String s) {
+       return s.replace(';',',');
+    }
 
     @Override
     public boolean equals(Object obj) {

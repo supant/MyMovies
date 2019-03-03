@@ -24,16 +24,16 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     private List<Programme> moviesList;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView titre, heure, nature,tmp,chaine;
+        public TextView titre, heure, nature,chaine,jour;
         public ImageView photo;
 
         public MyViewHolder(View view) {
             super(view);
             titre = (TextView) view.findViewById(R.id.title);
-            nature = (TextView) view.findViewById(R.id.genre);
-            heure = (TextView) view.findViewById(R.id.year);
+            jour = (TextView) view.findViewById(R.id.genre);
+            nature = (TextView) view.findViewById(R.id.year);
             photo =(ImageView) view.findViewById(R.id.thumbnail);
-            tmp = (TextView) view.findViewById(R.id.tmp);
+            heure = (TextView) view.findViewById(R.id.tmp);
             chaine = (TextView) view.findViewById(R.id.chaine);
         }
     }
@@ -56,7 +56,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
         Programme movie = moviesList.get(position);
         holder.titre.setText(movie.getTitre());
         holder.nature.setText(movie.getFirstStyle());
-        holder.heure.setText(movie.getStart().toStringJMA());
+        holder.jour.setText(movie.getStart().toStringJMA());
+        holder.heure.setText(movie.getStart().toStringHM());
         //holder.tmp.setText(movie.getUrlDiff());
         holder.chaine.setText(movie.getChaine().getNom());
 
