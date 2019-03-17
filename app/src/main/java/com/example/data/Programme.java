@@ -12,8 +12,10 @@ public class Programme {
     private int longueur;
     private Chaine chaine;
     private int statut;
-    private int dateCreation;
     private String episode;
+    private String rating;
+
+    private int dateCreation;
     private int id;
 
     private int statutAndroid;
@@ -34,7 +36,7 @@ public class Programme {
         this.titre = "";
         this.style = new LinkedList<String>();
         this.description = "";
-        this.longueur = -1;
+        this.longueur = this.start.differenceMinute(this.stop);;
         this.chaine = null;
         this.statut=0;
         this.dateCreation=0;
@@ -47,7 +49,7 @@ public class Programme {
 
     public Programme(MaDate start, MaDate stop, String titre, String description, String image,
                      int longueur, Chaine chaine, int statut, int dateCreation, String episode,
-                     int id, int statutAndroid, MaDate changement) {
+                     int id, int statutAndroid, MaDate changement,String rating) {
         this.start = start;
         this.stop = stop;
         this.titre = titre;
@@ -61,6 +63,8 @@ public class Programme {
         this.id = id;
         this.statutAndroid = statutAndroid;
         this.changement = changement;
+        this.rating=rating;
+        if (longueur<=0) longueur=start.differenceMinute(stop);
         this.style = new LinkedList<String>();
     }
 
@@ -76,17 +80,29 @@ public class Programme {
 
     public String toStringTxt() {
         //sans description pour l'instant
-        String result = virerPoinVirgule(titre)+";"+start.toStringAMJHMS()+";"+stop.toStringAMJHMS()+";"+
-        virerPoinVirgule("")+";"+image+";"+longueur+";"+chaine.getId()+";"+statut+";"+
+        String result = virerPointVirgule(titre)+";"+start.toStringAMJHMS()+";"+stop.toStringAMJHMS()+";"+
+        virerPointVirgule("")+";"+image+";"+longueur+";"+chaine.getId()+";"+statut+";"+
                 dateCreation+";"+episode+";"+id+";"+changement.toStringAMJHMS()+";"+
-                statutAndroid+";"+style.size();
+                statutAndroid+";"+rating+";"+style.size();
         for(int i =0;i<style.size();i++) {
             result += ";" + style.get(i);
         }
         return result;
     }
 
-    private String virerPoinVirgule(String s) {
+    public String toStringIntro() {
+        String result="[";
+        if (dateCreation>0) result+=dateCreation+", "; else result+="-, ";
+        if (!rating.equals("-0")) result+=rating+", "; else result+="-, ";
+        result+=longueur+"min";
+        for(int i=1;i<style.size();i++) {
+            result+=", "+style.get(i);
+        }
+        result+="]";
+        return result;
+    }
+
+    private String virerPointVirgule(String s) {
        return s.replace(';',',');
     }
 
@@ -133,6 +149,15 @@ public class Programme {
     public String getDescription() {
         return description;
     }
+
+    public String getRating() {
+        return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
+    }
+
     public void setTitre(String titre) {
         this.titre = titre;
     }
