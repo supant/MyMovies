@@ -2,6 +2,7 @@ package com.example.data;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.mymovies.MainActivity;
 import com.example.mymovies.R;
@@ -73,7 +74,7 @@ public class LesListes {
         remplirMinMaxDate();
         //Log.i("bob",debut.toStringAMJHMS()+" "+fin.toStringAMJHMS());
 
-        //Mise à jour des attributs
+        //Mise à date des attributs
 
 /*
         listLocal.add(listFilm.get(1));
@@ -159,7 +160,7 @@ public class LesListes {
             Programme pTmp = it.next();
             mainA.getMovieList().add(pTmp);
         }
-        mainA.setNombre( mainA.getMovieList().size()+"");
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
     }
 
     public void remplirAvoir() {
@@ -171,7 +172,7 @@ public class LesListes {
                 mainA.getMovieList().add(pTmp);
             }
         }
-        mainA.setNombre( mainA.getMovieList().size()+"");
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
     }
     public void remplirVu() {
         mainA.getMovieList().clear();
@@ -182,7 +183,7 @@ public class LesListes {
                 mainA.getMovieList().add(pTmp);
             }
         }
-        mainA.setNombre( mainA.getMovieList().size()+"");
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
     }
     public void remplirPoubelle() {
         mainA.getMovieList().clear();
@@ -193,7 +194,7 @@ public class LesListes {
                 mainA.getMovieList().add(pTmp);
             }
         }
-        mainA.setNombre( mainA.getMovieList().size()+"");
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
     }
 
     public void remplirCeSoir() {
@@ -206,6 +207,6 @@ public class LesListes {
                 mainA.getMovieList().add(pTmp);
             }
         }
-        mainA.setNombre( mainA.getMovieList().size()+"");
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
     }
 }

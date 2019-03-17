@@ -3,6 +3,7 @@ package com.example.data;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class MaDate {
 	private int heure;
@@ -77,7 +78,7 @@ public class MaDate {
 	private Date toDate()  {
 		String sDate=annee+checkZero(mois)+checkZero(jour)+
 		checkZero(heure)+checkZero(minute)+"00";
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
         try {
 			return sdf.parse(sDate);
 		} catch (ParseException e) {
@@ -108,7 +109,7 @@ public class MaDate {
 	}
 	@Override
 	public String toString() {
-		return "MaDate [heure=" + heure + ", minute=" + minute + ", jour=" + jour + ", mois=" + mois + ", annee="
+		return "MaDate [heure=" + heure + ", minute=" + minute + ", date=" + jour + ", mois=" + mois + ", annee="
 				+ annee + ", valeur=" + valeur + "]";
 	} 
 	

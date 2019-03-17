@@ -8,11 +8,14 @@ import android.os.Bundle;
 import android.os.PowerManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private MoviesAdapter mAdapter;
     private List<Programme> movieList = new ArrayList<>();
     private LesListes ll ;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private ProgressDialog mProgressDialog;
 
@@ -84,22 +89,44 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.navigation_infos:
+                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                alertDialog.setTitle(R.string.title_infos);
+                if (movieList.size()>0)
+                    alertDialog.setMessage(MessageFormat.format(getString(R.string.msg_infos),movieList.size(), ll.getFin().differenceJourInv()));
+                else
+                    alertDialog.setMessage(getString(R.string.msg_no_infos));
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                alertDialog.setCanceledOnTouchOutside(true);
+                alertDialog.show();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mTextMessage = (TextView) findViewById(R.id.txtNombre);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_movie);
-        button = findViewById(R.id.button);
-        button.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                clickRefreshButton();
-            }
-        });
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
 
@@ -118,7 +145,14 @@ public class MainActivity extends AppCompatActivity {
 
         ll=new LesListes(this);
         ll.remplirFilms();
-        button.setText(ll.getFin().differenceJourInv()+"");
+
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
+        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                clickRefreshButton();
+            }
+        });
 
     }
 
@@ -129,15 +163,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancel(DialogInterface dialog) {
                 downloadTask.cancel(true); //cancel the task
+                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }
 
     public List<Programme> getMovieList() {
         return movieList;
-    }
-    public void setNombre(String nb) {
-        mTextMessage.setText(nb);
     }
 
 
@@ -157,7 +189,14 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
     }
 
     protected void onPostExecute(String result) {
+        mProgressDialog.setIndeterminate(true);
+        mProgressDialog.setProgress(0);
         mProgressDialog.dismiss();
+        mSwipeRefreshLayout.setRefreshing(false);
+        ll=new LesListes(MainActivity.this);
+        ll.remplirFilms();
+        //mAdapter = new MoviesAdapter(movieList);
+        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -189,6 +228,7 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
             byte data[] = new byte[4096];
             long total = 0;
             int count;
+            mProgressDialog.setIndeterminate(false);
             while ((count = input.read(data)) != -1) {
                 // allow canceling with back button
                 if (isCancelled()) {
@@ -200,7 +240,8 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
                 // publishing the progress....
                 if (fileLength > 0) {// only if total length is known
                     publishProgress((int) (total * 100 / fileLength));
-                    //Log.i("bob","Progress "+(int) (total * 100 / fileLength));
+                    mProgressDialog.setProgress((int) (total * 100 / fileLength));
+                    Log.i("bob","Progress "+(int) (total * 100 / fileLength));
                 }
                 output.write(data, 0, count);
             }

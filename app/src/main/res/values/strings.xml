@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">MyMovies</string>
+    <string name="title_infos">Infos</string>
+    <string name="msg_infos">{0} films.\n{1} jours restant.</string>
+    <string name="msg_no_infos">Aucune information disponible actuellement</string>
     <string name="title_trash">Trash</string>
     <string name="title_movie">Movies</string>
     <string name="title_tonigth">Tonigth</string>
