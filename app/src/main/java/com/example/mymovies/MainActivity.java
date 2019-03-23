@@ -18,7 +18,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.data.Chaine;
@@ -34,7 +37,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private TextView mTextMessage;
     private Button button;
@@ -43,6 +46,9 @@ public class MainActivity extends AppCompatActivity {
     private List<Programme> movieList = new ArrayList<>();
     private LesListes ll ;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    Spinner spinnerChaine ;
+    Spinner spinnerDate ;
+
 
     private ProgressDialog mProgressDialog;
 
@@ -54,32 +60,30 @@ public class MainActivity extends AppCompatActivity {
             switch (item.getItemId()) {
                 case R.id.navigation_trash:
                     if(ll!=null) {
-                        ll.remplirPoubelle();
+                        ll.setFiltreStatut(Programme.poubelle);
+                        ll.remplirFilms();
                         mAdapter.notifyDataSetChanged();
                     }
                     return true;
                 case R.id.navigation_movie:
                     if(ll!=null) {
+                        ll.setFiltreStatut(Programme.pasdefiltre);
                         ll.remplirFilms();
-                        mAdapter.notifyDataSetChanged();
-                    }
-                    return true;
-                case R.id.navigation_tonight:
-                    if(ll!=null) {
-                        ll.remplirCeSoir();
                         mAdapter.notifyDataSetChanged();
                     }
                     return true;
                 case R.id.navigation_tosee:
                     if(ll!=null) {
-                        ll.remplirAvoir();
+                        ll.setFiltreStatut(Programme.avoir);
+                        ll.remplirFilms();
                         mAdapter.notifyDataSetChanged();
                     }
                     return true;
                 case R.id.navigation_saw:
                     if(ll!=null) {
                         //ll.savLocal();
-                        ll.remplirVu();
+                        ll.setFiltreStatut(Programme.vu);
+                        ll.remplirFilms();
                         mAdapter.notifyDataSetChanged();
                     }
                     return true;
@@ -128,8 +132,8 @@ public class MainActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigation.setSelectedItemId(R.id.navigation_movie);
 
+        //recycler view
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-
         mAdapter = new MoviesAdapter(movieList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -154,6 +158,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //filtres chaines
+        spinnerChaine = (Spinner) findViewById(R.id.spinnerchaine);
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, ll.getListChaine());
+        //mise en forme du spinner ouvert
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerChaine.setAdapter(dataAdapter);
+        //action on click
+        spinnerChaine.setOnItemSelectedListener(this);
+        //filtres date
+        spinnerDate = (Spinner) findViewById(R.id.spinnerdate);
+        ArrayAdapter<String> dataAdapterdate = new ArrayAdapter<String>(this,
+                android.R.layout.simple_spinner_item, ll.getDates());
+        //mise en forme du spinner ouvert
+        dataAdapterdate.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerDate.setAdapter(dataAdapterdate);
+        //action on click
+        spinnerDate.setOnItemSelectedListener(this);
     }
 
     private void clickRefreshButton() {
@@ -194,6 +216,9 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
         mProgressDialog.dismiss();
         mSwipeRefreshLayout.setRefreshing(false);
         ll=new LesListes(MainActivity.this);
+        ll.setFiltreStatut(Programme.pasdefiltre);
+        ll.setFiltreChaine(null);
+        ll.setFiltreDate(null);
         ll.remplirFilms();
         //mAdapter = new MoviesAdapter(movieList);
         mAdapter.notifyDataSetChanged();
@@ -264,48 +289,20 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
     }
 }
 
+// Gestion des clics sur les spînner
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
 
-    private void prepareMovieData() {
-        Programme p;
-        Chaine c = new Chaine("3");
-        c.setsNom("Canal");
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);
-        p.setTitre("bob");
-        p.setImage("https://static.playmedia-cdn.net/img/tv_programs/544501-545000/544769_xlarge.jpg");
-        p.setStyle("Horreur");
-        movieList.add(p);
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-
-        p=new Programme("20190101210012","20190101213011");
-        p.setChaine(c);p.setTitre("bob");
-        movieList.add(p);
-
+        String chaineSp = (String) spinnerChaine.getSelectedItem();
+        String dateSp = (String) spinnerDate.getSelectedItem();
+        ll.setFiltreChaine(chaineSp);
+        ll.setFiltreDate(dateSp);
+        ll.remplirFilms();
+        mAdapter.notifyDataSetChanged();
     }
 
-
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
 
 }

@@ -9,10 +9,7 @@
         android:id="@+id/navigation_movie"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_movie" />
-    <item
-        android:id="@+id/navigation_tonight"
-        android:icon="@drawable/baseline_query_builder_black_24dp"
-        android:title="@string/title_tonigth" />
+
     <item
         android:id="@+id/navigation_tosee"
         android:icon="@drawable/ic_notifications_black_24dp"

@@ -6,6 +6,8 @@ public class Chaine {
     private String nom;
     private int hash;
 
+    public static String tous = "Tous";
+
     public Chaine(String id) {
         this.id = id;
         try {
@@ -56,5 +58,10 @@ public class Chaine {
                 + numero + ", nom=" + nom + ", hash=" + hash + "]";
     }
 
-
+    public boolean equalNom(Chaine uneAutre) {
+        return this.getNom().equals(uneAutre.getNom());
+    }
+    public boolean equalNom(String uneAutre) {
+        return this.getNom().equals(uneAutre);
+    }
 }

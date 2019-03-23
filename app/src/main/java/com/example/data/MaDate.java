@@ -12,6 +12,9 @@ public class MaDate {
 	private int mois;
 	private int annee;
 	private String valeur;
+
+    public static String tous = "Tous";
+    public static String today = "Today";
 	
 	public MaDate(String valeur) {
 		this.valeur = valeur;
@@ -75,7 +78,7 @@ public class MaDate {
 	}
 	
 	
-	private Date toDate()  {
+	public Date toDate()  {
 		String sDate=annee+checkZero(mois)+checkZero(jour)+
 		checkZero(heure)+checkZero(minute)+"00";
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmss", Locale.getDefault());
@@ -107,6 +110,15 @@ public class MaDate {
 		Date now = new Date();
 		return (int)( -(now.getTime() - toDate().getTime()) / (24 * 60 * 60 * 1000) );
 	}
+	public int differenceJour(MaDate uneDate) {
+		return (int)( (uneDate.toDate().getTime() - toDate().getTime()) / (24 * 60 * 60 * 1000) );
+	}
+
+	public int differenceMinute(MaDate uneDate) {
+	    return (int) ( (uneDate.toDate().getTime()-this.toDate().getTime()) /(60*1000));
+
+	}
+
 	@Override
 	public String toString() {
 		return "MaDate [heure=" + heure + ", minute=" + minute + ", date=" + jour + ", mois=" + mois + ", annee="

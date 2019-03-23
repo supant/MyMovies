@@ -3,6 +3,7 @@ package com.example.data;
 import java.util.LinkedList;
 
 public class Programme {
+    //XML
     private MaDate start;
     private MaDate stop;
     private String titre;
@@ -11,13 +12,13 @@ public class Programme {
     private String image;
     private int longueur;
     private Chaine chaine;
-    private int statut;
     private String episode;
     private String rating;
-
     private int dateCreation;
+    // creer par XML : numero d'ordre ds le XML
     private int id;
 
+    // statut dans l'appli
     private int statutAndroid;
     private MaDate changement;
 
@@ -25,7 +26,7 @@ public class Programme {
     public static int poubelle = 1;
     public static int avoir = 2;
     public static int vu = 3;
-
+    public static int pasdefiltre = -1;
 
 
 
@@ -38,7 +39,6 @@ public class Programme {
         this.description = "";
         this.longueur = this.start.differenceMinute(this.stop);;
         this.chaine = null;
-        this.statut=0;
         this.dateCreation=0;
         this.episode="";
         this.id=-1;
@@ -48,7 +48,7 @@ public class Programme {
     }
 
     public Programme(MaDate start, MaDate stop, String titre, String description, String image,
-                     int longueur, Chaine chaine, int statut, int dateCreation, String episode,
+                     int longueur, Chaine chaine, int dateCreation, String episode,
                      int id, int statutAndroid, MaDate changement,String rating) {
         this.start = start;
         this.stop = stop;
@@ -57,7 +57,6 @@ public class Programme {
         this.image = image;
         this.longueur = longueur;
         this.chaine = chaine;
-        this.statut = statut;
         this.dateCreation = dateCreation;
         this.episode = episode;
         this.id = id;
@@ -72,8 +71,8 @@ public class Programme {
     public String toString() {
         return "Programme [start=" + start + ", stop=" + stop + ", titre="
                 + titre + ", style=" + style + ", description=" + description
-                + ", longueur=" + longueur + ", chaine=" + chaine + ", statut="
-                + statut + ", dateCreation=" + dateCreation + ", episode="
+                + ", longueur=" + longueur + ", chaine=" + chaine
+                + ", dateCreation=" + dateCreation + ", episode="
                 + episode + ", id=" + id + "]";
     }
 
@@ -81,7 +80,7 @@ public class Programme {
     public String toStringTxt() {
         //sans description pour l'instant
         String result = virerPointVirgule(titre)+";"+start.toStringAMJHMS()+";"+stop.toStringAMJHMS()+";"+
-        virerPointVirgule("")+";"+image+";"+longueur+";"+chaine.getId()+";"+statut+";"+
+        virerPointVirgule("")+";"+image+";"+longueur+";"+chaine.getId()+";"+";"+
                 dateCreation+";"+episode+";"+id+";"+changement.toStringAMJHMS()+";"+
                 statutAndroid+";"+rating+";"+style.size();
         for(int i =0;i<style.size();i++) {
@@ -182,12 +181,6 @@ public class Programme {
     }
     public void setEpisode(String episode) {
         this.episode = episode;
-    }
-    public int getStatut() {
-        return statut;
-    }
-    public void setStatut(int statut) {
-        this.statut = statut;
     }
     public int getId() {
         return id;

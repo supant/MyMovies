@@ -16,9 +16,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LesListes {
@@ -102,9 +107,9 @@ public class LesListes {
                 String[] col = line.split(";");
                 Chaine c = listChaine.get((col[6].split("\\.")[0]).hashCode());
                 Programme p = new Programme(new MaDate(col[1]),new MaDate(col[2]),col[0],col[3],
-                        col[4],Integer.parseInt(col[5]),c,Integer.parseInt(col[7]),
-                        Integer.parseInt(col[8]),col[9],Integer.parseInt(col[10]),
-                        Integer.parseInt(col[12]),new MaDate(col[11]));
+                        col[4],Integer.parseInt(col[5]),c,
+                        Integer.parseInt(col[7]),col[8],Integer.parseInt(col[9]),
+                        Integer.parseInt(col[11]),new MaDate(col[10]),col[12]);
                 int nbStyle=Integer.parseInt(col[13]);
                 for(int i=0;i<nbStyle;i++) {
                     p.setStyle(col[i+14]);
@@ -152,50 +157,94 @@ public class LesListes {
     public MaDate getFin() {
         return fin;
     }
+    public List<String> getListChaine() {
+        Collection<Chaine> chaines = listChaine.values();
+        List<String> result=new LinkedList<String>();
+        result.add(Chaine.tous);
+        for(Chaine c:chaines) {
+            result.add(c.getNom());
+        }
+        return result;
+    }
+    public List<String> getDates() {
+        Calendar c = Calendar.getInstance();
+        c.setTime(debut.toDate());
+        SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+        List<String> result=new LinkedList<String>();
+        int nbJour = debut.differenceJour(fin);
+        result.add(MaDate.tous);
+        result.add(MaDate.today);
+        if (nbJour<20) {
+            for (int i = 1; i < nbJour; i++) {
+                String output = sdf1.format(c.getTime());
+                result.add(output);
+                c.add(Calendar.DATE, 1);
+            }
+        }
+        return result;
+    }
 
-    public void remplirFilms() {
+    //Remplissage de la liste
+    private int filtreStatut=Programme.pasdefiltre;
+    private Chaine filtreChaine =null;
+    private MaDate filtreDate =null;
+
+    public void setFiltreStatut(int filtreStatut) {
+        this.filtreStatut = filtreStatut;
+    }
+    public void setFiltreChaine(String chainetmp) {
+        this.filtreChaine = null;
+        if (chainetmp!= null && !chainetmp.equals(Chaine.tous)) {
+            Collection<Chaine> chaines = listChaine.values();
+            for(Chaine c:chaines) {
+                if(c.equalNom(chainetmp)) filtreChaine=c;
+            }
+        }
+    }
+    public void setFiltreDate(String datetmp) {
+        this.filtreDate=null;
+        if (datetmp.equals(MaDate.today)) this.filtreDate=new MaDate();
+        if (datetmp!=null && !datetmp.equals(MaDate.today) && !datetmp.equals(MaDate.tous)) {
+            String result = datetmp.substring(6, 10) + datetmp.substring(3, 5) + datetmp.substring(0, 2) + "1010";
+            this.filtreDate = new MaDate(result);
+        }
+    }
+    /*public void remplirAlllFilms() {
         mainA.getMovieList().clear();
         Iterator<Programme> it = listFilm.iterator();
         while(it.hasNext())   {
             Programme pTmp = it.next();
             mainA.getMovieList().add(pTmp);
         }
-        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT).show();
+    }*/
+
+    public void remplirFilms() {
+        Log.i("bob",filtreChaine+"");
+        mainA.getMovieList().clear();
+        Iterator<Programme> it = listFilm.iterator();
+        while(it.hasNext())   {
+            Programme pTmp = it.next();
+            boolean ajouter = false;
+            if(filtreStatut!=Programme.pasdefiltre) {
+                if (pTmp.getStatutAndroid()==filtreStatut) {
+                    ajouter=true;
+                }
+            } else ajouter=true;
+
+            if(filtreChaine!=null && !pTmp.getChaine().equalNom(filtreChaine)) {
+                ajouter=false;
+            }
+            if(filtreDate!=null && pTmp.getStart().compareTo(filtreDate)!=0) {
+                ajouter=false;
+            }
+            if (ajouter) mainA.getMovieList().add(pTmp);
+        }
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT).show();
     }
 
-    public void remplirAvoir() {
-        mainA.getMovieList().clear();
-        Iterator<Programme> it = listLocal.iterator();
-        while(it.hasNext())   {
-            Programme pTmp = it.next();
-            if (pTmp.getStatutAndroid()==Programme.avoir) {
-                mainA.getMovieList().add(pTmp);
-            }
-        }
-        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
-    }
-    public void remplirVu() {
-        mainA.getMovieList().clear();
-        Iterator<Programme> it = listLocal.iterator();
-        while(it.hasNext())   {
-            Programme pTmp = it.next();
-            if (pTmp.getStatutAndroid()==Programme.vu) {
-                mainA.getMovieList().add(pTmp);
-            }
-        }
-        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
-    }
-    public void remplirPoubelle() {
-        mainA.getMovieList().clear();
-        Iterator<Programme> it = listLocal.iterator();
-        while(it.hasNext())   {
-            Programme pTmp = it.next();
-            if (pTmp.getStatutAndroid()==Programme.poubelle) {
-                mainA.getMovieList().add(pTmp);
-            }
-        }
-        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
-    }
+
+
 
     public void remplirCeSoir() {
         mainA.getMovieList().clear();
@@ -207,6 +256,8 @@ public class LesListes {
                 mainA.getMovieList().add(pTmp);
             }
         }
-        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT);
+        Toast.makeText( mainA, mainA.getMovieList().size()+"",Toast.LENGTH_SHORT).show();
     }
+
+
 }

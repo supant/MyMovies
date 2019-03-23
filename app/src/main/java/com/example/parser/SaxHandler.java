@@ -26,6 +26,7 @@ public class SaxHandler extends DefaultHandler {
 	private boolean bDate=false;
 	private boolean bEpisode=false;
 	private boolean bIcon=false;
+	private boolean bRating=false;
 
 	public HashMap<Integer, Chaine> getChaines() {
 		return hm;
@@ -74,6 +75,9 @@ public class SaxHandler extends DefaultHandler {
 		}
 		if (qName.equalsIgnoreCase("episode-num")) {
 			bEpisode=true;
+		}
+		if (qName.equalsIgnoreCase("value")) {
+			bRating=true;
 		}
 		if (qName.equalsIgnoreCase("icon")) {
 			bIcon=true;
@@ -126,6 +130,10 @@ public class SaxHandler extends DefaultHandler {
 		if (bEpisode) {
 			p.setEpisode(new String(ch, start, length));
 			bEpisode=false;
+		}
+		if (bRating) {
+			p.setRating(new String(ch, start, length));
+			bRating=false;
 		}
 		if (bIcon) {
 			bIcon=false;
