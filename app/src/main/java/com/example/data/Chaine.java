@@ -7,6 +7,8 @@ public class Chaine {
     private int hash;
 
     public static String tous = "Tous";
+    public static String ENTETE_IMDB="http://www.imdb.com/find?&q=";
+    public static String ENTETE_TELERAMA="http://www.telerama.fr/recherche/recherche.php?query=";
 
     public Chaine(String id) {
         this.id = id;

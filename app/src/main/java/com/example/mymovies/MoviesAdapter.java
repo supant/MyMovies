@@ -4,6 +4,8 @@ package com.example.mymovies;
  * Created by Antoine on 02/12/2017.
  */
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.support.constraint.ConstraintLayout;
@@ -26,7 +28,9 @@ import java.util.List;
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHolder> {
 
     private List<Programme> moviesList;
-    private AlertDialog alertDialog;
+   //private AlertDialog alertDialog;
+   private DialogMovie alertDialog;
+    private Activity myActivity;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView titre, heure, genre,chaine, date;
@@ -47,13 +51,15 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     }
 
 
-    public MoviesAdapter(List<Programme> moviesList) {
+    public MoviesAdapter(List<Programme> moviesList, Activity myActivity) {
         this.moviesList = moviesList;
+        this.myActivity = myActivity;
     }
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        alertDialog = new AlertDialog.Builder(parent.getContext()).create();
+        //alertDialog = new AlertDialog.Builder(parent.getContext()).create();
+        alertDialog = new DialogMovie(myActivity);
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_list_row, parent, false);
@@ -83,9 +89,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
             holder.root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    alertDialog.setMessage(movie.toStringIntro()+" "+movie.getDescription());
-                    //alertDialog.setContentView(R.layout.movie_det);
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "IMDB",
+                    //alertDialog.setMessage(movie.toStringIntro()+" "+movie.getDescription());
+                    //alertDialog.setContentView(R.layout.dialog_movie);
+                   /* alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "IMDB",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     //dialog.dismiss();
@@ -103,7 +109,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
                                 }
-                            });
+                            });*/
+                   alertDialog.setTxt(movie.toStringIntro()+" "+movie.getDescription(), movie.getTitre());
                     alertDialog.show();
 
                 }

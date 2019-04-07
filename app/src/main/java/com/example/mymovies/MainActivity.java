@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         //recycler view
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
-        mAdapter = new MoviesAdapter(movieList);
+        mAdapter = new MoviesAdapter(movieList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
