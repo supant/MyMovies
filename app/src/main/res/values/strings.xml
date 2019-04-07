@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyMovies</string>
+    <string name="app_name">AntMovies</string>
     <string name="title_infos">Infos</string>
     <string name="msg_infos">{0} films.\n{1} jours restant.</string>
     <string name="msg_no_infos">Aucune information disponible actuellement</string>

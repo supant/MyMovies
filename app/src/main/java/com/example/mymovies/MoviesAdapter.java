@@ -6,11 +6,14 @@ package com.example.mymovies;
 
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -38,6 +41,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
             photo =(ImageView) view.findViewById(R.id.thumbnail);
             heure = (TextView) view.findViewById(R.id.hour);
             chaine = (TextView) view.findViewById(R.id.chaine);
+
             root = view;
         }
     }
@@ -50,6 +54,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         alertDialog = new AlertDialog.Builder(parent.getContext()).create();
+
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_list_row, parent, false);
 
@@ -73,11 +78,27 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MyViewHold
                     .placeholder(R.drawable.imdb)
 					.into(holder.photo);
             else holder.photo.setImageResource(R.drawable.imdb);
+
+
             holder.root.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     alertDialog.setMessage(movie.toStringIntro()+" "+movie.getDescription());
-                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                    //alertDialog.setContentView(R.layout.movie_det);
+                    alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "IMDB",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    //dialog.dismiss();
+                                    Log.i("bob","Hooole"+which);
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "TELERAMA",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();

@@ -1,6 +1,7 @@
 package com.example.mymovies;
 
 import android.app.ProgressDialog;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
@@ -45,9 +46,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private MoviesAdapter mAdapter;
     private List<Programme> movieList = new ArrayList<>();
     private LesListes ll ;
-    private SwipeRefreshLayout mSwipeRefreshLayout;
-    Spinner spinnerChaine ;
-    Spinner spinnerDate ;
+    private Spinner spinnerChaine ;
+    private Spinner spinnerDate ;
+
+    private Menu menuHaut;
 
 
     private ProgressDialog mProgressDialog;
@@ -81,7 +83,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     return true;
                 case R.id.navigation_saw:
                     if(ll!=null) {
-                        //ll.savLocal();
                         ll.setFiltreStatut(Programme.vu);
                         ll.remplirFilms();
                         mAdapter.notifyDataSetChanged();
@@ -97,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
+        this.menuHaut = menu;
+        changeNavigation_Icon();
         return true;
     }
 
@@ -104,20 +107,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.navigation_infos:
-                AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
-                alertDialog.setTitle(R.string.title_infos);
-                if (movieList.size()>0)
-                    alertDialog.setMessage(MessageFormat.format(getString(R.string.msg_infos),movieList.size(), ll.getFin().differenceJourInv()));
-                else
-                    alertDialog.setMessage(getString(R.string.msg_no_infos));
-                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                            }
-                        });
-                alertDialog.setCanceledOnTouchOutside(true);
-                alertDialog.show();
+                clickRefreshButton();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -147,16 +137,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         mProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
         mProgressDialog.setCancelable(true);
 
+        //Chargement
         ll=new LesListes(this);
         ll.remplirFilms();
-
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipe_container);
-        mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                clickRefreshButton();
-            }
-        });
 
         //filtres chaines
         spinnerChaine = (Spinner) findViewById(R.id.spinnerchaine);
@@ -176,6 +159,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerDate.setAdapter(dataAdapterdate);
         //action on click
         spinnerDate.setOnItemSelectedListener(this);
+
     }
 
     private void clickRefreshButton() {
@@ -185,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onCancel(DialogInterface dialog) {
                 downloadTask.cancel(true); //cancel the task
-                mSwipeRefreshLayout.setRefreshing(false);
             }
         });
     }
@@ -214,14 +197,22 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
         mProgressDialog.setIndeterminate(true);
         mProgressDialog.setProgress(0);
         mProgressDialog.dismiss();
-        mSwipeRefreshLayout.setRefreshing(false);
+
+        //Remettre tout à jour
+        if (spinnerDate!=null) spinnerDate.setSelection(0);
+        if (spinnerChaine!=null) spinnerChaine.setSelection(0);
+
         ll=new LesListes(MainActivity.this);
         ll.setFiltreStatut(Programme.pasdefiltre);
         ll.setFiltreChaine(null);
         ll.setFiltreDate(null);
         ll.remplirFilms();
+
         //mAdapter = new MoviesAdapter(movieList);
+        changeNavigation_Icon();
+
         mAdapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -266,7 +257,7 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
                 if (fileLength > 0) {// only if total length is known
                     publishProgress((int) (total * 100 / fileLength));
                     mProgressDialog.setProgress((int) (total * 100 / fileLength));
-                    Log.i("bob","Progress "+(int) (total * 100 / fileLength));
+                    //Log.i("bob","Progress "+(int) (total * 100 / fileLength));
                 }
                 output.write(data, 0, count);
             }
@@ -289,7 +280,21 @@ private class DownloadTask extends AsyncTask<String, Integer, String> {
     }
 }
 
-// Gestion des clics sur les spînner
+// Gestion du navigate bouton 0-6
+    public void changeNavigation_Icon() {
+        //ll.getFin().differenceJourInv()
+        MenuItem menuItem = menuHaut.findItem(R.id.navigation_infos);
+        int nbJour = ll.getFin().differenceJourInv();
+        if (nbJour<=0) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_trip_origin_24px));
+        if (nbJour==1) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_looks_one_24px));
+        if (nbJour==2) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_looks_two_24px));
+        if (nbJour==3) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_looks_3_24px));
+        if (nbJour==4) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_looks_4_24px));
+        if (nbJour==5) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_looks_5_24px));
+        if (nbJour>=6) menuItem.setIcon(getResources().getDrawable(R.drawable.baseline_looks_6_24px));
+    }
+
+    // Gestion des clics sur les spinner
     public void onItemSelected(AdapterView<?> parent, View view,
                                int pos, long id) {
 

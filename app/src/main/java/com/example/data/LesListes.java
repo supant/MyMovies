@@ -77,20 +77,8 @@ public class LesListes {
         }
 
         remplirMinMaxDate();
-        //Log.i("bob",debut.toStringAMJHMS()+" "+fin.toStringAMJHMS());
 
-        //Mise à date des attributs
 
-/*
-        listLocal.add(listFilm.get(1));
-        listLocal.add(listFilm.get(2));
-        listLocal.add(listFilm.get(3));
-        listLocal.get(0).setStatutAndroid(Programme.avoir);
-        listLocal.get(1).setStatutAndroid(Programme.poubelle);
-        listLocal.get(2).setStatutAndroid(Programme.vu);
-
-        Log.i("bob",listLocal.size()+"");
-        */
 
     }
 
@@ -172,8 +160,10 @@ public class LesListes {
         SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
         List<String> result=new LinkedList<String>();
         int nbJour = debut.differenceJour(fin);
+        SimpleDateFormat sdfday = new SimpleDateFormat("dd");
+        Date day = new Date();
         result.add(MaDate.tous);
-        result.add(MaDate.today);
+        result.add(MaDate.today+" ("+sdfday.format(day)+")");
         if (nbJour<20) {
             for (int i = 1; i < nbJour; i++) {
                 String output = sdf1.format(c.getTime());
@@ -203,8 +193,8 @@ public class LesListes {
     }
     public void setFiltreDate(String datetmp) {
         this.filtreDate=null;
-        if (datetmp.equals(MaDate.today)) this.filtreDate=new MaDate();
-        if (datetmp!=null && !datetmp.equals(MaDate.today) && !datetmp.equals(MaDate.tous)) {
+        if (datetmp!=null && datetmp.substring(0,4).equals(MaDate.shorttoday)) this.filtreDate=new MaDate();
+        if (datetmp!=null && !datetmp.substring(0,4).equals(MaDate.shorttoday) && !datetmp.equals(MaDate.tous)) {
             String result = datetmp.substring(6, 10) + datetmp.substring(3, 5) + datetmp.substring(0, 2) + "1010";
             this.filtreDate = new MaDate(result);
         }

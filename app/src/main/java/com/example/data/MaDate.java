@@ -15,6 +15,7 @@ public class MaDate {
 
     public static String tous = "Tous";
     public static String today = "Today";
+	public static String shorttoday = "Toda";
 	
 	public MaDate(String valeur) {
 		this.valeur = valeur;
